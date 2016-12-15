@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="css/wuran.css">
+	<link rel="stylesheet" type="text/css" href="css/normalize.css">
+	<script type="text/javascript" src="../js/jquery-1.12.4.min.js"></script>
+</head>
+<body>
+	<header>
+		<span></span>
+		<h1>空气污染指数</h1>
+		<span></span>
+	</header>
+	<section class="main">
+		<p class="number">85</p>
+		<div class="qita">
+			<p class="cityid">测试</p>
+			<p class="quality">良</p>
+		</div>
+		<section class="fabu"><span class="date"></span>发布</section>
+	</section>
+	<section class="main2">
+		<p class="affect">空气质量可接受，但某些污染物可能对极少数异常敏感人群健康有较弱影响</p>
+		<p class="paihan">全国排行榜：第292位<span></span></p>
+	</section>
+	<section class="main3">
+		<ul>
+			
+		</ul>
+		<canvas></canvas>
+	</section>
+	<footer>
+		<div class="news">
+			<h3>PM2.5是什么?</h3>
+			<img src="" alt="">
+			<p class="keke">PM2.5是什么?</p>
+		</div>
+	</footer>
+</body>
+<script type="text/javascript">
+	var fs = document.documentElement.clientWidth/6.4;
+	console.log(fs);
+	document.getElementsByTagName("html")[0].style.fontSize = fs + "px";
+
+	var url = "http://web.juhe.cn:8080/environment/air",
+		key = "key=00638049f9a0fbffd4ea17f651b68c2f",
+		data = "",
+		str = "",
+		_data = url + "/cityair?" + key + "&city=杭州";
+
+
+	/*$.getJSON("ajax3.php",{date: _data},function(json,textStatus){
+		var hotfilm = json.subjects;
+		if(hotfilm != ""){
+
+		}
+	});*/
+	/*getData(_data);
+	
+
+	function getData(_data){
+		console.log(_data);*/
+		$.ajax({
+			url: 'ajax3.php',
+			type: 'GET',
+			dataType: 'json',
+			data: {data: _data}
+		})
+		.done(function(data) {
+			
+			var m = 0,
+				data = data.result[0],
+				dataR = data.citynow,
+				city = dataR.city,
+				aqi = dataR.AQI,
+				quality = dataR.quality,
+				date = dataR.date;
+				/*affect = data.aqiinfo.affect,
+				measure = data.aqiinfo.measure,
+				pm10 = data.pm10,
+				pm2_5 = data["PM2.5"],
+				co = data.co,
+				no2 = data.no2,
+				so2 = data.so2*/
+			console.log(city);
+			var timeMo = date.substring(5,11).replace("-","/");
+			console.log(timeMo);
+
+			var show_day = ["周日","周一","周二","周三","周四","周五","周六"];
+
+			/*var timeday = time_1.getDay();
+			console.log(timeday);*/
+
+			$(".number")[0].innerHTML = aqi;
+			$(".cityid")[0].innerHTML = city;
+			$(".quality")[0].innerHTML = quality;
+			$(".date")[0].innerHTML = date;
+			// $(".affect")[0].innerHTML = affect + "。" + measure;
+
+			var riqiLast = data.lastTwoWeeks;
+			for(var attr in riqiLast){
+				m++;
+			}
+
+			for (var i = 6; i > 0; i--) {
+				var time_1 = Date.parse(riqiLast[m - i].date),
+					time_1 = new Date(time_1),
+					timeday = time_1.getDay();
+				console.log(m);
+				// var timeLa = time_1.substring(5,11).replace("-","");
+				str += `<li>
+							<span>${show_day[timeday]}</span>
+							<span class="date_day">${timeLo}</span>
+						</li>`;
+			}
+
+			str += `<li>
+						<span>${show_day[timeday]}</span>
+						<span class="date_day">${timeMo}</span>
+					</li>`;
+			$(".main3 ul").html(str);
+
+			/*for(var i = 0; i < data.length; i++){
+				str += `<span class="date_day">12/01</span>`
+			}
+			$("ul").html(str);*/
+		});
+	// }
+</script>
+</html>
